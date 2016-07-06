@@ -79,6 +79,12 @@ int do_integral(double*delta_sigma,double*err,integrand_params*params){
 
   int status = gsl_integration_qag(&F,lrmin-10,lrmin,TOL,TOL/10.,workspace_size,6,workspace,&result1,&abserr1);
 
+  if (lrmin >= lRp){
+    *delta_sigma = result1;
+    *err = abserr1;
+    return status;
+  }
+
   F.function=&integrand2;
   status |= gsl_integration_qag(&F,lrmin,lRp,TOL,TOL/10.,workspace_size,6,workspace,&result2,&abserr2);
 
