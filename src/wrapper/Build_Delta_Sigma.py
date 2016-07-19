@@ -17,15 +17,19 @@ def build_Delta_Sigma(R,xi_hm,cosmo_dict,input_params):
     R,NR,xi_hm
     h,om,ode,ok,
     Mass,concentration,
-    delta,flow_control,timing,
+    Rmis,fmis,
+    delta,
+    flow_control,timing,miscentering
     sigma_r,delta_sigma,
     """
 
     interface.argtypes=[POINTER(c_double),c_int,\
                         POINTER(c_double),\
                         c_double,c_double,c_double,c_double,\
-                        c_double,c_double,c_int,\
-                        POINTER(c_int),c_int,
+                        c_double,c_double,\
+                        c_double,c_double,\
+                        c_int,\
+                        POINTER(c_int),c_int,c_int\
                         POINTER(c_double),POINTER(c_double)]
     NR = len(R)
     if not (NR==len(xi_hm)):
@@ -36,8 +40,12 @@ def build_Delta_Sigma(R,xi_hm,cosmo_dict,input_params):
     xi_hm_in = xi_hm.ctypes.data_as(POINTER(c_double))
 
     Mass,concentration,delta,timing = input_params["Mass"],input_params["concentration"],input_params["delta"],input_params["timing"]
-
     h,om,ode,ok = cosmo_dict['h'],cosmo_dict['om'],cosmo_dict['ode'],cosmo_dict['ok']
+    miscentering = input_params["miscentering"]
+    if miscentering == 1:
+        Rmis,fmis = input_params["Rmis"],input_params["fmis"]
+    else:
+        Rmis = fmis = 0
     flow_control = np.zeros(1).ctypes.data_as(POINTER(c_int))
 
     sigma_r = np.zeros(NR)
@@ -47,8 +55,10 @@ def build_Delta_Sigma(R,xi_hm,cosmo_dict,input_params):
 
     result = interface(R_in,NR,xi_hm_in,\
                        h,om,ode,ok,\
-                       Mass,concentration,delta,\
-                       flow_control,timing,\
+                       Mass,concentration,\
+                       Rmis,fmis,\
+                       delta,\
+                       flow_control,timing,miscentering,\
                        sigma_r_in,delta_sigma_in)
     
     #Now build a dictionary and return it

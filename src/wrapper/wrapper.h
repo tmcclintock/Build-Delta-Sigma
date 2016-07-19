@@ -39,6 +39,8 @@ int python_interface(double*R,int NR,
 		     double*xi_hm,
 		     double h,double om,double ode,double ok,
 		     double Mass,double concentration,
+		     double Rmis,double fmis,
 		     int delta,
 		     int*flow_control,int timing,
+		     int miscentering,
 		     double*sigma_r,double*delta_sigma);

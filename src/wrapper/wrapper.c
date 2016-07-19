@@ -39,8 +39,9 @@ int interface(double*R,int NR,
 int python_interface(double*R,int NR,double*xi_hm,
 		     double h,double om,double ode,double ok,
 		     double Mass,double concentration,
+		     double Rmis,double fmis,
 		     int delta,
-		     int*flow_control,int timing,
+		     int*flow_control,int timing,int miscentering,
 		     double*sigma_r,double*delta_sigma){
   
   cosmology*cosmo = (cosmology*)malloc(sizeof(cosmology));
@@ -53,8 +54,11 @@ int python_interface(double*R,int NR,double*xi_hm,
     (interface_parameters*)malloc(sizeof(interface_parameters));
   params->Mass=Mass;
   params->concentration=concentration;
+  //params->Rmis=Rmis;
+  //params->fmis=fmis;
   params->delta=delta;
   params->timing=timing; //1 is true
+  //params->miscentering=miscentering; //1 is true
 
   wrapper_output*outputs=(wrapper_output*)malloc(sizeof(wrapper_output));
   outputs->sigma_r=sigma_r;

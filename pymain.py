@@ -38,9 +38,12 @@ Mass - mass of the halo
 concentration - concentration of the halo
 NR - number of radial points you want to sample
 delta - overdensity
+Rmis - width of the miscentering 2D Gaussian in units of Mpc/h
+fmis - fracton of miscentered halos
 timing - 1 if you want to print timing information, 0 if not
+miscentering - 1 if you want to calculate miscentered information, 0 if not
 """
-input_params = {"Mass": 10**13.049,"delta":200,"timing":1}
+input_params = {"Mass": 10**13.049,"delta":200,"timing":1,"Rmis":0.2,"fmis":0.3,miscentering:0}
 #input_params["concentration"] = 5.0 #For eduardo's stuff
 input_params["concentration"] = 4.0*(input_params["Mass"]/5.e14)**-0.1
 #Above is an example M-c relation. This particular one is complete garbage.
