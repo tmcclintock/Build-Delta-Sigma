@@ -1,4 +1,4 @@
-OBJS = src/xi_nfw/xi_nfw.o src/sigma_r/sigma_r.o src/sigma_r/sigma_r_at_r.o src/delta_sigma/delta_sigma.o src/delta_sigma/delta_sigma_at_r.o src/wrapper/wrapper.o
+OBJS = src/xi_nfw/xi_nfw.o src/sigma_r/sigma_r.o src/sigma_r/sigma_r_at_r.o src/delta_sigma/delta_sigma.o src/delta_sigma/delta_sigma_at_r.o src/miscentered_sigma_r/miscentered_sigma_r.o src/miscentered_sigma_r/miscentered_sigma_r_at_r.o src/miscentered_delta_sigma/miscentered_delta_sigma.o src/miscentered_delta_sigma/miscentered_delta_sigma_at_r.o src/wrapper/wrapper.o
 
 CC = gcc
 ifdef SHARED
@@ -17,8 +17,8 @@ OFLAGS =
 endif
 
 #Note the paths to GSL
-INCL = -I/home/tom/code/gsl/include/ -fopenmp -O3
-LIBS = -lgsl -lgslcblas -L/home/tom/code/gsl/lib -lm -fopenmp -O3
+INCL = -I/home/tmcclintock/code/gsl/include/ -fopenmp -O3
+LIBS = -lgsl -lgslcblas -L/home/tmcclintock/code/gsl/lib -lm -fopenmp -O3
 .SUFFIXES : .c .o
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCL) -c $< -o $@

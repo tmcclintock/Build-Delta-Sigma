@@ -24,13 +24,14 @@ def build_Delta_Sigma(R,xi_hm,cosmo_dict,input_params):
     """
 
     interface.argtypes=[POINTER(c_double),c_int,\
-                        POINTER(c_double),\
-                        c_double,c_double,c_double,c_double,\
-                        c_double,c_double,\
-                        c_double,c_double,\
-                        c_int,\
-                        POINTER(c_int),c_int,c_int\
-                        POINTER(c_double),POINTER(c_double)]
+                            POINTER(c_double),\
+                            c_double,c_double,c_double,c_double,\
+                            c_double,c_double,\
+                            c_double,c_double,\
+                            c_int,\
+                            POINTER(c_int),c_int,c_int,\
+                            POINTER(c_double),POINTER(c_double),\
+                            POINTER(c_double),POINTER(c_double)]
     NR = len(R)
     if not (NR==len(xi_hm)):
         print "Error: len(R) != len(xi_hm)"
@@ -52,15 +53,24 @@ def build_Delta_Sigma(R,xi_hm,cosmo_dict,input_params):
     sigma_r_in = sigma_r.ctypes.data_as(POINTER(c_double))
     delta_sigma = np.zeros(NR)
     delta_sigma_in = delta_sigma.ctypes.data_as(POINTER(c_double))
+    mis_sigma_r = np.zeros(NR)
+    mis_sigma_r_in = mis_sigma_r.ctypes.data_as(POINTER(c_double))
+    mis_delta_sigma = np.zeros(NR)
+    mis_delta_sigma_in = mis_delta_sigma.ctypes.data_as(POINTER(c_double))
 
     result = interface(R_in,NR,xi_hm_in,\
-                       h,om,ode,ok,\
-                       Mass,concentration,\
-                       Rmis,fmis,\
-                       delta,\
-                       flow_control,timing,miscentering,\
-                       sigma_r_in,delta_sigma_in)
+                           h,om,ode,ok,\
+                           Mass,concentration,\
+                           Rmis,fmis,\
+                           delta,\
+                           flow_control,timing,miscentering,\
+                           sigma_r_in,delta_sigma_in,\
+                           mis_sigma_r_in,mis_delta_sigma_in)
     
     #Now build a dictionary and return it
-    return_dict = {"R":R,"xi_hm":xi_hm,"sigma_r":sigma_r,"delta_sigma":delta_sigma}
+    if miscentering == 0:
+        return_dict = {"R":R,"xi_hm":xi_hm,"sigma_r":sigma_r,"delta_sigma":delta_sigma}
+    else:
+        return_dict = {"R":R,"xi_hm":xi_hm,"sigma_r":sigma_r,"delta_sigma":delta_sigma,"miscentered_sigma_r":mis_sigma_r,"miscentered_delta_sigma":mis_delta_sigma}
+
     return return_dict

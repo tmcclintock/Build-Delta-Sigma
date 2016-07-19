@@ -13,11 +13,11 @@
 #ifndef INTERFACE
 #define INTERFACE
 typedef struct interface_parameters{
-  double Mass;
-  double concentration;
+  double Mass, concentration;
+  double Rmis, fmis;
   int delta;
   int*flow_control;
-  int timing;
+  int timing, miscentering;
 }interface_parameters;
 #endif
 
@@ -26,6 +26,8 @@ typedef struct interface_parameters{
 typedef struct wrapper_output{
   double*sigma_r;
   double*delta_sigma;
+  double*mis_sigma_r;
+  double*mis_delta_sigma;
 }wrapper_output;
 #endif
 
@@ -43,4 +45,6 @@ int python_interface(double*R,int NR,
 		     int delta,
 		     int*flow_control,int timing,
 		     int miscentering,
-		     double*sigma_r,double*delta_sigma);
+		     double*sigma_r,double*delta_sigma,
+		     double*mis_sigma_r,double*mis_delta_sigma);
+
