@@ -71,6 +71,6 @@ def build_Delta_Sigma(R,xi_hm,cosmo_dict,input_params):
     if miscentering == 0:
         return_dict = {"R":R,"xi_hm":xi_hm,"sigma_r":sigma_r,"delta_sigma":delta_sigma}
     else:
-        return_dict = {"R":R,"xi_hm":xi_hm,"sigma_r":sigma_r,"delta_sigma":delta_sigma,"miscentered_sigma_r":mis_sigma_r,"miscentered_delta_sigma":mis_delta_sigma}
+        return_dict = {"R":R,"xi_hm":xi_hm,"sigma_r":sigma_r,"delta_sigma":delta_sigma,"miscentered_sigma_r":mis_sigma_r,"miscentered_delta_sigma":mis_delta_sigma,"full_delta_sigma":(1.-fmis)*delta_sigma+fmis*mis_delta_sigma}
 
     return return_dict

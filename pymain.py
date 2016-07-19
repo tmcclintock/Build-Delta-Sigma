@@ -61,12 +61,14 @@ sigma_r = return_dict['sigma_r']
 delta_sigma = return_dict['delta_sigma']
 mis_sigma_r = return_dict['miscentered_sigma_r']
 mis_delta_sigma = return_dict['miscentered_delta_sigma']
+full_delta_sigma = return_dict['full_delta_sigma']
 
 plt.loglog(R,xi_hm,label=r"$\xi_{hm}$")
 plt.loglog(R,sigma_r,label=r"$\Sigma$")
 plt.loglog(R,delta_sigma,label=r"$\Delta\Sigma$")
-plt.loglog(R,mis_sigma_r,c="purple",ls="--",label=r"$\Sigma_{mis}$",alpha=0.8)
-plt.loglog(R,mis_delta_sigma,"k--",label=r"$\Delta\Sigma_{mis}$",alpha=0.8)
+plt.loglog(R,mis_sigma_r,"--",label=r"$\Sigma_{mis}$",alpha=0.5)
+plt.loglog(R,mis_delta_sigma,"--",label=r"$\Delta\Sigma_{mis}$",alpha=0.5)
+plt.loglog(R,full_delta_sigma,"k-.",label=r"$\Delta\Sigma_{full}$",alpha=0.8,linewidth=2)
 
 plt.legend()
 plt.xlabel(r"$R\ [Mpc/h]$",fontsize=24)
