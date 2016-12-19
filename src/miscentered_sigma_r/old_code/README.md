@@ -1,0 +1,1 @@
+This version of miscentered_sigma_r_at_r.c contains the convolution with a 2D Gaussian, instead of Sigma(R) actually offset by some distance R_mis.

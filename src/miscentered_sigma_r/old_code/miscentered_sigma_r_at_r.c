@@ -33,9 +33,14 @@ typedef struct integrand_params{
   double cos_theta; //Temp variable for cos(theta)
 }integrand_params;
 
+static double P_mis(double Rc,double Rmis_sq){
+  return Rc/(Rmis_sq)*exp(-Rc*Rc/(2.0*Rmis_sq));
+}//2D gaussian of width Rmis and mean 0
+
 static int do_integral(double*sigmar_r,double*err,integrand_params*params);
 
 static double integrand_outer(double theta,void*params);
+static double integrand_inner(double lRc,void*params);
 
 static double sigma_r_1halo_analytic(double R,double Mass,double concentration,double om,double H0,int delta);
 
@@ -73,8 +78,7 @@ int calc_miscentered_sigma_r_at_r(double Rp,double Mass,double concentration,
   do_integral(mis_sigma_r,err,params);
   *mis_sigma_r *= 1./PI;
   *err *= 1./PI;
-  //Factor of PI from the angular integral. 
-  //The 2 is cancelled because our integral goes from 0 to PI.
+  //Factor of PI from the angular integral
 
   gsl_spline_free(spline),gsl_interp_accel_free(acc);
   gsl_integration_workspace_free(workspace);
@@ -105,11 +109,32 @@ int do_integral(double*mis_sigma_r,double*err,integrand_params*params){
 double integrand_outer(double theta,void*params){
 
   integrand_params*pars = (integrand_params*)params;
-  double Rp   = pars->rperp;
-  double Rmis = pars->Rmis;
-  double arg  = sqrt(Rp*Rp+Rmis*Rmis-2*Rp*Rmis*cos(theta));
+  double cos_theta = cos(theta);
+  pars->cos_theta = cos_theta;
+
+  double lrmin = pars->lrmin,lrmax = pars->lrmax;
+  
+  gsl_integration_workspace*workspace=pars->workspace2;
+  gsl_function F;
+  F.function = &integrand_inner;
+  F.params = pars;
+
+  double result,abserr;
+  int status = 0;
+  status = gsl_integration_qag(&F,lrmin-10,lrmax,TOL1,TOL1/10.,workspace_size,6,workspace,&result,&abserr);
+
+  return result;
+}
+
+double integrand_inner(double lRc,void*params){
+  double Rc = exp(lRc);
+
+  integrand_params*pars = (integrand_params*)params;
 
   double rmin = pars->rmin,rmax = pars->rmax;
+  double Rp = pars->rperp;
+  double cos_theta = pars->cos_theta;
+  double arg = sqrt(Rp*Rp+Rc*Rc-2*Rp*Rc*cos_theta);
   if (arg < rmin){
     double Mass = pars->Mass;
     double concentration = pars->concentration;
@@ -117,20 +142,16 @@ double integrand_outer(double theta,void*params){
     cosmology cosmo = pars->cosmo;
     double om = cosmo.om;
     double h = cosmo.h;
-    return sigma_r_1halo_analytic(arg,Mass,concentration,om,h*100.,delta);
+    return Rc*P_mis(Rc,pars->Rmis_sq)*sigma_r_1halo_analytic(arg,Mass,concentration,om,h*100.,delta);
   }else if(arg < rmax){
     gsl_spline*spline = pars->spline;
     gsl_interp_accel*acc = pars->acc;
-    return gsl_spline_eval(spline,arg,acc);
+    return Rc*P_mis(Rc,pars->Rmis_sq)*gsl_spline_eval(spline,arg,acc);
+  }else{
+    return 0;
   }
-
-  //If arg > rmax then return 0
-  return 0;
 }
 
-/*
-  The analytic form of Sigma(R) for an NFW profile.
- */
 double sigma_r_1halo_analytic(double R,double Mass,double concentration,
 			      double om,double H0,int delta){
   double c = concentration;
