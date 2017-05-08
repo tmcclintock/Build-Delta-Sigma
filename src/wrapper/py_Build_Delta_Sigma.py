@@ -6,9 +6,14 @@ doesn't have to.
 import numpy as np
 import ctypes
 from ctypes import c_double,c_int,POINTER,cdll
+import inspect
+import os
+print "here first"
+library_path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))+"/Build_Delta_Sigma.so"
+dslib = cdll.LoadLibrary(library_path)
+print "got here"
 
 def build_Delta_Sigma(R,xi_hm,cosmo_dict,input_params):
-    dslib = cdll.LoadLibrary("Build_Delta_Sigma.so")
     interface = dslib.python_interface
     interface.restype = c_int
 

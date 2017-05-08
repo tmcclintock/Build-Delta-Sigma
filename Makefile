@@ -10,15 +10,15 @@ OFLAGS =
 endif
 else
 $(info Building shared library)
-EXEC = Build_Delta_Sigma.so
+EXEC = ./src/wrapper/Build_Delta_Sigma.so
 CFLAGS = -fPIC
 OFLAGS = -shared 
 #-W1,-soname=$(EXEC)
 endif
 
 #Note the paths to GSL
-INCL = -I/$(GSLI) -fopenmp -O3
-LIBS = -lgsl -lgslcblas -L/$(GSLL) -lm -fopenmp -O3
+INCL = -I/$(GSLI) -fopenmp -O2
+LIBS = -lgsl -lgslcblas -L/$(GSLL) -lm -fopenmp -O2
 .SUFFIXES : .c .o
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCL) -c $< -o $@
@@ -31,5 +31,5 @@ $(EXEC): $(OBJS)
 .PHONY : clean
 
 clean:
-	rm -f $(OBJS) main.exe Build_Delta_Sigma.so
+	rm -f $(OBJS) main.exe $(EXEC)
 	rm -f *~

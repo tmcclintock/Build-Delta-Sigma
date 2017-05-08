@@ -20,7 +20,7 @@ have it install in the python directory.
 """
 import sys
 sys.path.insert(0,"src/wrapper/")
-import Build_Delta_Sigma
+import py_Build_Delta_Sigma
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -52,7 +52,7 @@ input_params["concentration"] = 4.0*(input_params["Mass"]/5.e14)**-0.1
 #Above is an example M-c relation. This particular one is complete garbage.
 
 #Results come out in a dictionary
-return_dict = Build_Delta_Sigma.build_Delta_Sigma(R,xi_hm,cosmo,input_params)
+return_dict = py_Build_Delta_Sigma.build_Delta_Sigma(R,xi_hm,cosmo,input_params)
 print return_dict.keys()
 
 R = return_dict["R"]
