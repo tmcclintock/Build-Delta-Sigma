@@ -6,9 +6,12 @@ doesn't have to.
 import numpy as np
 import ctypes
 from ctypes import c_double,c_int,POINTER,cdll
+import inspect
+import os
+library_path = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))+"/Build_Delta_Sigma.so"
+dslib = cdll.LoadLibrary(library_path)
 
-def build_Delta_Sigma(R,xi_hm,cosmo_dict,input_params):
-    dslib = cdll.LoadLibrary("Build_Delta_Sigma.so")
+def build_Delta_Sigma(R, xi_hm, cosmo_dict, input_params):
     interface = dslib.python_interface
     interface.restype = c_int
 
@@ -23,15 +26,15 @@ def build_Delta_Sigma(R,xi_hm,cosmo_dict,input_params):
     sigma_r,delta_sigma,
     """
 
-    interface.argtypes=[POINTER(c_double),c_int,\
-                            POINTER(c_double),\
-                            c_double,c_double,c_double,c_double,\
-                            c_double,c_double,\
-                            c_double,c_double,\
-                            c_int,\
-                            POINTER(c_int),c_int,c_int,\
-                            POINTER(c_double),POINTER(c_double),\
-                            POINTER(c_double),POINTER(c_double)]
+    interface.argtypes=[POINTER(c_double),c_int,
+                        POINTER(c_double),
+                        c_double,c_double,c_double,c_double,
+                        c_double,c_double,
+                        c_double,c_double,
+                        c_int,
+                        POINTER(c_int),c_int,c_int,
+                        POINTER(c_double),POINTER(c_double),
+                        POINTER(c_double),POINTER(c_double)]
     NR = len(R)
     if not (NR==len(xi_hm)):
         print "Error: len(R) != len(xi_hm)"
@@ -58,14 +61,14 @@ def build_Delta_Sigma(R,xi_hm,cosmo_dict,input_params):
     mis_delta_sigma = np.zeros(NR)
     mis_delta_sigma_in = mis_delta_sigma.ctypes.data_as(POINTER(c_double))
 
-    result = interface(R_in,NR,xi_hm_in,\
-                           h,om,ode,ok,\
-                           Mass,concentration,\
-                           Rmis,fmis,\
-                           delta,\
-                           flow_control,timing,miscentering,\
-                           sigma_r_in,delta_sigma_in,\
-                           mis_sigma_r_in,mis_delta_sigma_in)
+    result = interface(R_in,NR,xi_hm_in,
+                       h,om,ode,ok,
+                       Mass,concentration,
+                       Rmis,fmis,
+                       delta,
+                       flow_control,timing,miscentering,
+                       sigma_r_in,delta_sigma_in,
+                       mis_sigma_r_in,mis_delta_sigma_in)
     
     #Now build a dictionary and return it
     if miscentering == 0:

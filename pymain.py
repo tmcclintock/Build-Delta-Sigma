@@ -20,7 +20,7 @@ have it install in the python directory.
 """
 import sys
 sys.path.insert(0,"src/wrapper/")
-import Build_Delta_Sigma
+import py_Build_Delta_Sigma
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -52,7 +52,7 @@ input_params["concentration"] = 4.0*(input_params["Mass"]/5.e14)**-0.1
 #Above is an example M-c relation. This particular one is complete garbage.
 
 #Results come out in a dictionary
-return_dict = Build_Delta_Sigma.build_Delta_Sigma(R,xi_hm,cosmo,input_params)
+return_dict = py_Build_Delta_Sigma.build_Delta_Sigma(R,xi_hm,cosmo,input_params)
 print return_dict.keys()
 
 R = return_dict["R"]
@@ -63,14 +63,15 @@ mis_sigma_r = return_dict['miscentered_sigma_r']
 mis_delta_sigma = return_dict['miscentered_delta_sigma']
 full_delta_sigma = return_dict['full_delta_sigma']
 
-plt.loglog(R,xi_hm,label=r"$\xi_{hm}$")
-plt.loglog(R,sigma_r,label=r"$\Sigma$")
-plt.loglog(R,delta_sigma,label=r"$\Delta\Sigma$")
-plt.loglog(R,mis_sigma_r,"--",label=r"$\Sigma_{mis}$",alpha=0.5)
-plt.loglog(R,mis_delta_sigma,"--",label=r"$\Delta\Sigma_{mis}$",alpha=0.5)
-plt.loglog(R,full_delta_sigma,"k-.",label=r"$\Delta\Sigma_{full}$",alpha=0.8,linewidth=2)
+#plt.loglog(R,xi_hm,label=r"$\xi_{hm}$")
+#plt.loglog(R,sigma_r,label=r"$\Sigma$")
+plt.loglog(R,delta_sigma,label=r"$\Delta\Sigma$",lw=2)
+#plt.loglog(R,mis_sigma_r,"--",label=r"$\Sigma_{mis}$",alpha=0.5)
+plt.loglog(R,mis_delta_sigma,"--",label=r"$\Delta\Sigma_{mis}$",c='r',lw=2)
+#plt.loglog(R,full_delta_sigma,"k-.",label=r"$\Delta\Sigma_{full}$",alpha=0.8,linewidth=2)
 
 plt.legend()
-plt.xlabel(r"$R\ [Mpc/h]$",fontsize=24)
+plt.xlabel(r"$R\ [{\rm Mpc}/h]$",fontsize=24)
+plt.ylabel(r"$\Delta\Sigma\ [{\rm M_\odot}h/{\rm pc^2}]$",fontsize=24)
 plt.subplots_adjust(bottom=0.15)
 plt.show()
