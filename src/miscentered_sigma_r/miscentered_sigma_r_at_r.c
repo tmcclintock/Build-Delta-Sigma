@@ -35,7 +35,7 @@ typedef struct integrand_params{
 
 static int do_integral(double*sigmar_r,double*err,integrand_params*params);
 
-static double integrand_outer(double theta,void*params);
+static double integrand(double theta,void*params);
 
 static double sigma_r_1halo_analytic(double R,double Mass,double concentration,double om,double H0,int delta);
 
@@ -89,7 +89,7 @@ int do_integral(double*mis_sigma_r,double*err,integrand_params*params){
   gsl_integration_workspace*workspace=params->workspace;
 
   gsl_function F;
-  F.function=&integrand_outer;
+  F.function=&integrand;
   F.params=params;
 
   double result,abserr;
@@ -102,7 +102,7 @@ int do_integral(double*mis_sigma_r,double*err,integrand_params*params){
   return status;
 }
 
-double integrand_outer(double theta,void*params){
+double integrand(double theta,void*params){
 
   integrand_params*pars = (integrand_params*)params;
   double Rp   = pars->rperp;
